@@ -19,7 +19,7 @@ struct SettingsSheetView: View {
         Tool(name: "Launch Daemons", desc: "Start daemons using launchctl", action: ToolAction.daemons),
         Tool(name: "Respring", desc: "Restart SpringBoard", action: ToolAction.respring),
         Tool(name: "Activate Tweaks", desc: "Runs substitute-launcher to activate tweaks", action: ToolAction.tweaks),
-        Tool(name: "Do All", desc: "Do all of the above", action: ToolAction.all),
+        Tool(name: "Kick Start", desc: "Kick Start all of the above", action: ToolAction.all),
     ]
     
     var body: some View {
