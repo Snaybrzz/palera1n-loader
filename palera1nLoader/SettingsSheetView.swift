@@ -26,11 +26,7 @@ struct SettingsSheetView: View {
         PackageManager(name: "Sileo", desc: "Modern package manager (recommended)", action: PackageManagers.sileo),
         PackageManager(name: "Zebra", desc: "Cydia-ish look and feel with modern features", action: PackageManagers.zebra),
         PackageManager(name: "Cydia", desc: "Old and nostalgic package manager (not recommended, partially broken)", action: PackageManagers.cydia),
-    ]
-    
-    var openers: [Opener] = [
-        Opener(name: "Sileo", desc: "Open the Sileo app", action: Openers.sileo),
-        Opener(name: "TrollHelper", desc: "Open the TrollHelper app, clicking install will resolve iPad uicache issues", action: Openers.trollhelper),
+   
     ]
     
     var body: some View {
@@ -61,17 +57,16 @@ struct SettingsSheetView: View {
                 PMView(pm)
             }
 
-            Text("Openers")
+            Text("@pwnd2e")
                 .fontWeight(.bold)
                 .font(.title)
 
-            Text("Mainly for iPads (and their uicache issues), specified app must be installed.")
+            Text("Forked and maintained by 2e's custom services")
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity, alignment: .center)
 
-            ForEach(openers) { opener in
-                OpenersView(opener)
-            }
+               
+        
         }
         .navigationTitle("Tools")
     }

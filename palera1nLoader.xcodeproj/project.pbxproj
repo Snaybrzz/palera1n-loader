@@ -37,6 +37,7 @@
 		AAEF9D83291EEAC10089149B /* HostManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF9D7F291EEAC10089149B /* HostManagerBridge.m */; };
 		AAEF9D86291EEBF70089149B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEF9D85291EEBF70089149B /* IOKit.framework */; };
 		AAEF9D8C291EEFF00089149B /* ViewFlip.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEF9D8B291EEFF00089149B /* ViewFlip.swift */; };
+		B1F722B72950453A0005E232 /* palera1n-white.png in Resources */ = {isa = PBXBuildFile; fileRef = B1F722B62950453A0005E232 /* palera1n-white.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -92,6 +93,7 @@
 		AAEF9D85291EEBF70089149B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		AAEF9D8B291EEFF00089149B /* ViewFlip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewFlip.swift; sourceTree = "<group>"; };
 		AAEF9D93291EF22A0089149B /* bridging or something.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "bridging or something.h"; sourceTree = "<group>"; };
+		B1F722B62950453A0005E232 /* palera1n-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "palera1n-white.png"; path = "Assets.xcassets/palera1n-white.imageset/palera1n-white.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +203,7 @@
 		AAEF9D5A291ED9F80089149B /* palera1nLoader */ = {
 			isa = PBXGroup;
 			children = (
+				B1F722B62950453A0005E232 /* palera1n-white.png */,
 				AAA741FB293D1CCA000243C2 /* palera1nLoader.entitlements */,
 				331E9B8D2932D07C00363FA9 /* Info.plist */,
 				331E9B762932C51300363FA9 /* Required */,
@@ -387,6 +390,7 @@
 			files = (
 				AA95DB8B292050FA0055F1C0 /* bootstrap.tar in Resources */,
 				AAEF9D60291ED9FB0089149B /* Assets.xcassets in Resources */,
+				B1F722B72950453A0005E232 /* palera1n-white.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,7 +608,7 @@
 				CODE_SIGN_ENTITLEMENTS = palera1nLoader/palera1nLoader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 566RT33SA2;
+				DEVELOPMENT_TEAM = JFN2Q273Y3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = palera1nLoader/Info.plist;
@@ -640,7 +644,7 @@
 				CODE_SIGN_ENTITLEMENTS = palera1nLoader/palera1nLoader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 566RT33SA2;
+				DEVELOPMENT_TEAM = JFN2Q273Y3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = palera1nLoader/Info.plist;
