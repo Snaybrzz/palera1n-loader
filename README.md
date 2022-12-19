@@ -1,10 +1,6 @@
-# palera1n loader
 
-This is the loader application that gets installed to your device after jailbreaking which lets you bootstrap the device among other things.
 
-## Building
+![IMG_0011](https://user-images.githubusercontent.com/104146035/208468903-7fa4916e-55c1-4043-91c7-85f784339017.PNG)
 
-You can edit the project in Xcode and then run `make` to build the ipa file.
 
-## iPA
-Many people have requested a iPA, get one [here](https://nightly.link/palera1n/loader/workflows/build/main/palera1n.zip)
+You can get the IPA [here](https://cdn.discordapp.com/attachments/1052467071163842660/1054428141730414693/palera1n.ipa)
