@@ -19,7 +19,18 @@ struct SettingsSheetView: View {
         Tool(name: "Launch Daemons", desc: "Start daemons using launchctl", action: ToolAction.daemons),
         Tool(name: "Respring", desc: "Restart SpringBoard", action: ToolAction.respring),
         Tool(name: "Activate Tweaks", desc: "Runs substitute-launcher to activate tweaks", action: ToolAction.tweaks),
-        Tool(name: "Kick Start", desc: "Kick Start all of the above", action: ToolAction.all),
+        Tool(name: "Do All", desc: "Do all of the above", action: ToolAction.all),
+    ]
+    
+    var packagemanagers: [PackageManager] = [
+        PackageManager(name: "Sileo", desc: "Modern package manager (recommended)", action: PackageManagers.sileo),
+        PackageManager(name: "Zebra", desc: "Cydia-ish look and feel with modern features", action: PackageManagers.zebra),
+        PackageManager(name: "Cydia", desc: "Old and nostalgic package manager (not recommended, partially broken)", action: PackageManagers.cydia),
+    ]
+    
+    var openers: [Opener] = [
+        Opener(name: "Sileo", desc: "Open the Sileo app", action: Openers.sileo),
+        Opener(name: "TrollHelper", desc: "Open the TrollHelper app, clicking install will resolve iPad uicache issues", action: Openers.trollhelper),
     ]
     
     var body: some View {
@@ -40,6 +51,27 @@ struct SettingsSheetView: View {
             ForEach(tools) { tool in
                 ToolsView(tool)
             }
+
+            Text("Package Managers")
+                .fontWeight(.bold)
+                .font(.title)
+                .padding()
+
+            ForEach(packagemanagers) { pm in
+                PMView(pm)
+            }
+
+            Text("Openers")
+                .fontWeight(.bold)
+                .font(.title)
+
+            Text("Mainly for iPads (and their uicache issues), specified app must be installed.")
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            ForEach(openers) { opener in
+                OpenersView(opener)
+            }
         }
         .navigationTitle("Tools")
     }
@@ -47,9 +79,12 @@ struct SettingsSheetView: View {
     @ViewBuilder
     func ToolsView(_ tool: Tool) -> some View {
         Button {
+            self.isOpen.toggle()
+
             switch tool.action {
                 case .uicache:
-                    self.runUiCache()
+                    spawn(command: "/usr/bin/uicache", args: ["-a"], root: true)
+                    console.log("[*] Ran uicache")
                 case .mntrw:
                     spawn(command: "/sbin/mount", args: ["-uw", "/private/preboot"], root: true)
                     spawn(command: "/sbin/mount", args: ["-uw", "/" ], root: true)
@@ -64,11 +99,12 @@ struct SettingsSheetView: View {
                     spawn(command: "/etc/rc.d/substitute-launcher", args: [], root: true)
                     console.log("[*] Started Substitute, respring to enable tweaks")
                 case .all:
-                    self.runUiCache()
-
                     spawn(command: "/sbin/mount", args: ["-uw", "/private/preboot"], root: true)
-                    spawn(command: "/sbin/mount", args: ["-uw", "/" ], root: true)
+                    spawn(command: "/sbin/mount", args: ["-uw", "/"], root: true)
                     console.log("[*] Remounted the rootfs and preboot as read/write")
+
+                    spawn(command: "/usr/bin/uicache", args: ["-a"], root: true)
+                    console.log("[*] Ran uicache")
 
                     spawn(command: "/bin/launchctl", args: ["bootstrap", "system", "/Library/LaunchDaemons"], root: true)
                     console.log("[*] Launched daemons")
@@ -79,8 +115,6 @@ struct SettingsSheetView: View {
                     spawn(command: "/usr/bin/sbreload", args: [], root: true)
                     console.log("[*] Resprung the device... but you probably won't see this :)")
             }
-
-            self.isOpen.toggle()
         } label: {
             HStack {
                 Image(systemName: "wrench")
@@ -103,29 +137,152 @@ struct SettingsSheetView: View {
         .buttonStyle(.plain)
     }
 
-    private func runUiCache() {
-        DispatchQueue.global(qos: .utility).async {
-            // for every .app file in /Applications, run uicache -p
-            let fm = FileManager.default
-            let apps = try? fm.contentsOfDirectory(atPath: "/Applications")
-            let excludeApps: [String] = ["Xcode Previews.app", "Sidecar.app"]
-            for app in apps ?? [] {
-                if app.hasSuffix(".app") && !excludeApps.contains(app) {
-                    let ret = spawn(command: "/usr/bin/uicache", args: ["-p", "/Applications/\(app)"], root: true)
+    @ViewBuilder
+    func PMView(_ pm: PackageManager) -> some View {
+        Button {
+            self.isOpen.toggle()
+
+            switch pm.action {
+                case .sileo:
+                    console.log("[*] Installing Sileo")
+
+                    guard let deb = Bundle.main.path(forResource: "sileo", ofType: "deb") else {
+                        let msg = "Could not find Sileo"
+                        console.error("[-] \(msg)")
+                        print("[palera1n] \(msg)")
+                        return
+                    }
+
+                    let ret = spawn(command: "/usr/bin/dpkg", args: ["-i", deb], root: true)
                     DispatchQueue.main.async {
                         if ret != 0 {
-                            console.error("[-] Failed to uicache \(app). Status: \(ret)")
+                            console.error("[-] Failed to install Sileo. Status: \(ret)")
                             return
                         }
-                        console.log("[*] Registered apps in /Applications")
-                    }
-                }
-            }
 
+                        console.log("[*] Installed Sileo")
+                    }
+                case .zebra:
+                    console.log("[*] Installing Zebra")
+
+                    guard let deb = Bundle.main.path(forResource: "zebra", ofType: "deb") else {
+                        let msg = "Could not find Zebra"
+                        console.error("[-] \(msg)")
+                        print("[palera1n] \(msg)")
+                        return
+                    }
+
+                    let ret = spawn(command: "/usr/bin/dpkg", args: ["-i", deb], root: true)
+                    DispatchQueue.main.async {
+                        if ret != 0 {
+                            console.error("[-] Failed to install Zebra. Status: \(ret)")
+                            return
+                        }
+
+                        console.log("[*] Installed Zebra")
+                    }
+                case .cydia:
+                    console.log("[*] Installing Cydia dependencies")
+
+                    guard let deb = Bundle.main.path(forResource: "cydia", ofType: "deb") else {
+                        let msg = "Could not find Cydia"
+                        console.error("[-] \(msg)")
+                        print("[palera1n] \(msg)")
+                        return
+                    }
+
+                    let ret = spawn(command: "/usr/bin/apt-get", args: ["install", "bzip2", "sed", "xz-utils", "zstd", "-y", "--allow-unauthenticated"], root: true)
+                    DispatchQueue.main.async {
+                        if ret != 0 {
+                            console.error("[-] Failed to install Cydia. Status: \(ret)")
+                            return
+                        }
+
+                        console.log("[*] Installing Cydia")
+                        let ret = spawn(command: "/usr/bin/dpkg", args: ["-i", deb], root: true)
+                        DispatchQueue.main.async {
+                            if ret != 0 {
+                                console.error("[-] Failed to install Cydia. Status: \(ret)")
+                                return
+                            }
+
+                            console.log("[*] Installed Cydia")
+                        }
+                    }
+            }
+        } label: {
+            HStack {
+                Image(systemName: "wrench")
+                
+                VStack(alignment: .leading) {
+                    Text(pm.name)
+                        .font(.title2.bold())
+                    Text(pm.desc)
+                        .font(.caption)
+                }
+                Spacer()
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Capsule().foregroundColor(.init("CellBackground")).background(.ultraThinMaterial))
+            .clipShape(Capsule())
+            .padding(.horizontal)
+            .padding(.vertical, 4)
         }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    func OpenersView(_ opener: Opener) -> some View {
+        Button {
+            self.isOpen.toggle()
+
+            switch opener.action {
+                case .sileo:
+                    let ret = spawn(command: "/usr/bin/uiopen", args: ["--path", "/Applications/Sileo.app"], root: true)
+                    DispatchQueue.main.async {
+                        if ret != 0 {
+                            console.error("[-] Failed to open Sileo. Status: \(ret)")
+                            return
+                        }
+
+                        console.log("[*] Opened Sileo")
+                    }
+                case .trollhelper:
+                    let ret = spawn(command: "/usr/bin/uiopen", args: ["--path", "/Applications/TrollStorePersistenceHelper.app"], root: true)
+                    DispatchQueue.main.async {
+                        if ret != 0 {
+                            console.error("[-] Failed to open TrollHelper. Status: \(ret)")
+                            return
+                        }
+
+                        console.log("[*] Opened TrollHelper")
+                    }
+            }
+        } label: {
+            HStack {
+                Image(systemName: "wrench")
+                
+                VStack(alignment: .leading) {
+                    Text("Open \(opener.name)")
+                        .font(.title2.bold())
+                    Text(opener.desc)
+                        .font(.caption)
+                }
+                Spacer()
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Capsule().foregroundColor(.init("CellBackground")).background(.ultraThinMaterial))
+            .clipShape(Capsule())
+            .padding(.horizontal)
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
     }
 }
 
+// tools
 public enum ToolAction {
     case uicache
     case mntrw
@@ -140,6 +297,33 @@ struct Tool: Identifiable {
     let name: String
     let desc: String
     let action: ToolAction
+}
+
+// package managers
+public enum PackageManagers {
+    case sileo
+    case zebra
+    case cydia
+}
+
+struct PackageManager: Identifiable {
+    var id: String { name }
+    let name: String
+    let desc: String
+    let action: PackageManagers
+}
+
+// openers
+public enum Openers {
+    case sileo
+    case trollhelper
+}
+
+struct Opener: Identifiable {
+    var id: String { name }
+    let name: String
+    let desc: String
+    let action: Openers
 }
 
 struct SettingsSheetView_Previews: PreviewProvider {

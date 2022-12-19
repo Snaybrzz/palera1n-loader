@@ -32,7 +32,7 @@ struct ContentView: View {
                             let platformname = d.getPlatformName() ?? "Unknown"
                             let platformver = d.getPlatformVersion() ?? "Unknown"
                             
-                            console.log("Welcome to palera1n Loader forked by pwnd2e @2escustomservices")
+                            console.log("Welcome to palera1n loader")
                             console.log(uname())
                             console.log("\(machinename) running \(platformname) \(platformver) (\(modelarch))")
                         }
@@ -77,16 +77,11 @@ struct ContentView: View {
                 Image("palera1n-white")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(0.0)
-                    .frame(width: 68.0)
+                    .frame(width: 64)
                 Text("palera1n")
-                    .font(.system(size: 40, weight: .bold))
-                    .padding(0.0)
-                    
-                    
-                    
+                    .font(.system(size: 48, weight: .bold))
             }
-            .padding(6)
+            .padding(8)
         }
     }
     
@@ -168,7 +163,7 @@ struct ContentView: View {
         }
         
         guard let safemode = Bundle.main.path(forResource: "safemode", ofType: "deb") else {
-            let msg = "Could not find safemode"
+            let msg = "Could not find SafeMode"
             console.error("[-] \(msg)")
             tb.toolbarState = .closeApp
             print("[palera1n] \(msg)")
@@ -176,7 +171,7 @@ struct ContentView: View {
         }
         
         guard let preferenceloader = Bundle.main.path(forResource: "preferenceloader", ofType: "deb") else {
-            let msg = "Could not find preferenceloader"
+            let msg = "Could not find PreferenceLoader"
             console.error("[-] \(msg)")
             tb.toolbarState = .closeApp
             print("[palera1n] \(msg)")
@@ -184,7 +179,15 @@ struct ContentView: View {
         }
         
         guard let substitute = Bundle.main.path(forResource: "substitute", ofType: "deb") else {
-            let msg = "Could not find substitute"
+            let msg = "Could not find Substitute"
+            console.error("[-] \(msg)")
+            tb.toolbarState = .closeApp
+            print("[palera1n] \(msg)")
+            return
+        }
+        
+        guard let strapRepo = Bundle.main.path(forResource: "straprepo", ofType: "deb") else {
+            let msg = "Could not find strap repo deb"
             console.error("[-] \(msg)")
             tb.toolbarState = .closeApp
             print("[palera1n] \(msg)")
@@ -227,18 +230,30 @@ struct ContentView: View {
                                     return
                                 }
                                 
-                                console.log("[*] Registering Sileo in uicache")
+                                console.log("[*] Running uicache")
                                 DispatchQueue.global(qos: .utility).async {
-                                    let ret = spawn(command: "/usr/bin/uicache", args: ["-p", "/Applications/Sileo.app"], root: true)
+                                    let ret = spawn(command: "/usr/bin/uicache", args: ["-a"], root: true)
                                     DispatchQueue.main.async {
                                         if ret != 0 {
                                             console.error("[-] Failed to uicache. Status: \(ret)")
                                             tb.toolbarState = .closeApp
                                             return
                                         }
-                                        console.log("[*] Finished installing! Enjoy!")
                                         
-                                        tb.toolbarState = .respring
+                                        console.log("[*] Installing palera1n strap repo")
+                                        DispatchQueue.global(qos: .utility).async {
+                                            let ret = spawn(command: "/usr/bin/dpkg", args: ["-i", strapRepo], root: true)
+                                            DispatchQueue.main.async {
+                                                if ret != 0 {
+                                                    console.error("[-] Failed to install palera1n strap repo. Status: \(ret)")
+                                                    tb.toolbarState = .closeApp
+                                                    return
+                                                }
+
+                                                console.log("[*] Finished installing! Enjoy!")
+                                                tb.toolbarState = .respring
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -317,7 +332,6 @@ struct ToolbarController: View {
                     .background(Capsule().foregroundColor(.white))
             }
             .buttonStyle(.plain)
-            .padding(.horizontal, 10)
             
             Button {
                 self.infoIsOpen.toggle()

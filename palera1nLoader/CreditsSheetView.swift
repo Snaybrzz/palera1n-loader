@@ -16,7 +16,6 @@ struct CreditsSheetView: View {
     @Binding var isOpen: Bool
     
     var credits: [Person] = [
-        Person(name: "pwnd2e", icon: URL(string: "https://pbs.twimg.com/profile_images/1604510765968461830/MUDz1xPH_400x400.jpg")!, role: "palera1n Loader fork", link: URL(string: "https://github.com/pwnd2e/palera1n-loader")!),
         Person(name: "Nebula", icon: URL(string: "https://avatars.githubusercontent.com/u/18669106?v=4")!, role: "palera1n Owner", link: URL(string: "https://github.com/itsnebulalol")!),
         Person(name: "Mineek", icon: URL(string: "https://avatars.githubusercontent.com/u/84083936?v=4")!, role: "palera1n Owner", link: URL(string: "https://github.com/mineek")!),
         Person(name: "Nathan", icon: URL(string: "https://avatars.githubusercontent.com/u/87825638?v=4")!, role: "palera1n Developer", link: URL(string: "https://github.com/verygenericname")!),
